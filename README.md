@@ -8,3 +8,6 @@ Attendeng is an attendent taking app used for our team. The idea is to reuse old
 
 Develop using Ionic v1.x
 
+# Next
+To add gamification to encourage early comers.
+
