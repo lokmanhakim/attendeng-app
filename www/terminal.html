@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link rel="manifest" href="manifest.json">
+
+    <!-- un-comment this code to enable service worker
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(() => console.log('service worker installed'))
+          .catch(err => console.log('Error', err));
+      }
+    </script>-->
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <!-- qr-code -->
+    <script src="lib/qrcode.js/lib/qrcode.min.js"></script>
+    <script src="lib/angular-qr/angular-qr.min.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="lib/ngCordova/dist/ng-cordova.js"></script>
+    <script src="cordova.js"></script>
+
+    <!-- your app's js -->
+    <script src="js/app.js"></script>
+    <script src="js/attendeng.js"></script>
+</head>
+
+
+<body ng-app="attendengApp">
+
+<ion-pane ng-controller="jongCtrl as jc">
+
+    <ion-content>
+
+        <div class="item profile-item">
+            <h1 class="light text-center">Attendeng - An Attendenace Management System</h1>
+            <!--<ul>-->
+            <!--<li ng-repeat="item in jc.logs"> {{ item }}</li>-->
+            <!--</ul>-->
+        </div>
+        <div class="row">
+            <div class="col follow line" align="center">
+                <h3>
+                    0 <br> <span>POINTS</span>
+                </h3>
+            </div>
+            <div class="col follow line" align="center">
+                <h3>
+                    0 <br> <span>LATE</span>
+                </h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col action">
+                <button class="button button-block button-calm" ng-click="jc.checkIOQr('01')"><i class="ion-log-in"></i> Check-in (terminal)</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col action">
+                <button class="button button-block button-warning" ng-click="jc.checkIOQr('02')"><i class="ion-log-out"></i> Check-out (terminal)</button>
+            </div>
+        </div>
+
+    </ion-content>
+
+    <ion-footer-bar align-title="left" class="bar-dark">
+        <div class="buttons">
+            <button class="button" ng-click="jc.logout()" ng-show="jc.loggedIn === true"><i class="ion-log-out"></i> Logout</button>
+            <button class="button" on-double-tap="jc.onDoubleTap()">Terminal Mode</button>
+        </div>
+    </ion-footer-bar>
+
+
+</ion-pane>
+</body>
+</html>

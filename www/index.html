@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link rel="manifest" href="manifest.json">
+
+    <!-- un-comment this code to enable service worker
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(() => console.log('service worker installed'))
+          .catch(err => console.log('Error', err));
+      }
+    </script>-->
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <!-- qr-code -->
+    <script src="lib/qrcode.js/lib/qrcode.min.js"></script>
+    <script src="lib/angular-qr/angular-qr.min.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="lib/ngCordova/dist/ng-cordova.js"></script>
+    <script src="cordova.js"></script>
+
+    <!-- your app's js -->
+    <script src="js/app.js"></script>
+    <script src="js/attendeng.js"></script>
+</head>
+
+
+<body ng-app="attendengApp">
+
+    <ion-pane ng-controller="jongCtrl as jc">
+
+        <ion-content>
+
+            <div class="item profile-item">
+                <h1 class="light text-center" ng-click="jc.login()" ng-show="jc.loggedIn === false" ng-if="jc.terminal_mode === false">Hi! Please login</h1>
+                <h1 class="light text-center" ng-show="jc.loggedIn === true" ng-if="jc.terminal_mode === false">Hello, {{ jc.username }}!</h1>
+                <h1 class="light text-center wrap" ng-show="jc.terminal_mode === true">Good morning! <br> <small>Please scan the code using your app</small></h1>
+
+                <!--<ul>-->
+                    <!--<li ng-repeat="item in jc.logs"> {{ item }}</li>-->
+                <!--</ul>-->
+            </div>
+            <div class="row">
+                <div class="col follow line" align="center">
+                    <h3>
+                        0 <br> <span>POINTS</span>
+                    </h3>
+                </div>
+                <div class="col follow line" align="center">
+                    <h3>
+                        0 <br> <span>LATE</span>
+                    </h3>
+                </div>
+            </div>
+
+            <div ng-if="jc.terminal_mode === false">
+                <div class="row">
+                    <div class="col action">
+                        <button class="button button-block button-energized" ng-click="jc.scanCode('01')"><i class="ion-log-in"></i> Check-in</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col action">
+                        <button class="button button-block button-energized" ng-click="jc.scanCode('02')"><i class="ion-log-out"></i> Check-out</button>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-if="jc.terminal_mode === true">
+                <div class="row">
+                    <div class="col action">
+                        <button class="button button-block button-calm" ng-click="jc.checkIOQr('01')"><i class="ion-log-in"></i> Check-in (terminal)</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col action">
+                        <button class="button button-block button-calm" ng-click="jc.checkIOQr('02')"><i class="ion-log-out"></i> Check-out (terminal)</button>
+                    </div>
+                </div>
+            </div>
+
+
+        </ion-content>
+
+        <ion-footer-bar align-title="left" class="bar-dark">
+            <div class="buttons">
+                <button class="button" ng-click="jc.logout()" ng-show="jc.loggedIn === true"><i class="ion-log-out"></i> Logout</button>
+                <button class="button" on-hold="jc.enableTerminalMode()" ng-if="jc.terminal_mode === false">Terminal Mode</button>
+            </div>
+        </ion-footer-bar>
+
+        <script id="qr-modal.html" type="text/ng-template">
+            <ion-modal-view>
+                <ion-header-bar class="bar-assertive">
+                    <h1 class="title">{{ jc.title }}</h1>
+                </ion-header-bar>
+                <ion-content>
+                    <div class="list list-inset">
+
+                        <div class="item">
+                            <qr type-number="8" correction-level="'M'" size="320" text="jc.string" image="true"></qr>
+                        </div>
+
+                        <div class="item">
+                            <button class="button button-block button-dark" ng-click="closeModalQr()">close</button>
+                        </div>
+
+                    </div>
+                </ion-content>
+            </ion-modal-view>
+        </script>
+
+        <script id="login-modal.html" type="text/ng-template">
+            <ion-modal-view>
+                <ion-header-bar class="bar-assertive">
+                    <h1 class="title">Login</h1>
+                </ion-header-bar>
+                <ion-content>
+                    <div class="list list-inset">
+
+                        <div class="item">
+                            <div class="list">
+                                <label class="item item-input">
+                                    <span class="input-label right-align">Username</span>
+                                    <input type="text" placeholder="username" ng-model="jc.user.username">
+                                </label>
+                                <label class="item item-input">
+                                    <span class="input-label right-align">Password</span>
+                                    <input type="password" placeholder="Password" ng-model="jc.user.password">
+                                </label>
+                            </div>
+                            <button class="button button-full button-assertive absolute bottom-0"
+                                    ng-click="jc.submitLogin()"> Login
+                            </button>
+                        </div>
+
+                        <div class="item">
+                            <button class="button button-block button-dark" ng-click="closeModalLogin()">close</button>
+                        </div>
+
+                    </div>
+                </ion-content>
+            </ion-modal-view>
+        </script>
+
+    </ion-pane>
+</body>
+</html>
